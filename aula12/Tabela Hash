@@ -1,0 +1,121 @@
+class File:
+    def __init__(self, name, path, size):
+        self.name = name          
+        self.path = path          
+        self.size = size          
+        self.next = None         
+
+    def __str__(self):
+        return f"Nome: {self.name}, Caminho: {self.path}, Tamanho: {self.size} KB"
+
+
+class FileHashTable:
+    def __init__(self, size=10):
+        self.size = size
+        self.table = [None] * size  
+
+    def hash_function(self, key):
+        return hash(key) % self.size
+
+    def add_file(self, name, path, size):
+        index = self.hash_function(name)
+        new_file = File(name, path, size)
+
+        if self.table[index] is None:
+            self.table[index] = new_file  
+        else:
+            
+            current = self.table[index]
+            while current:
+                if current.name == name:
+                    current.path = path 
+                    current.size = size 
+                    return
+                if current.next is None:
+                    break
+                current = current.next
+            current.next = new_file 
+
+    def search_file(self, name):
+        index = self.hash_function(name)
+        current = self.table[index]
+        while current:
+            if current.name == name:
+                return current  
+            current = current.next
+        return None  
+
+    def remove_file(self, name):
+        index = self.hash_function(name)
+        current = self.table[index]
+        prev = None
+        while current:
+            if current.name == name:
+                if prev is None:
+                    self.table[index] = current.next 
+                else:
+                    prev.next = current.next  
+                return True  
+            prev = current
+            current = current.next
+        return False  
+
+    def list_files(self):
+        files = []
+        for index in range(self.size):
+            current = self.table[index]
+            while current:
+                files.append(str(current))  
+                current = current.next
+        return files
+
+
+
+
+
+
+def main():
+    htable = FileHashTable()
+
+    while True:
+        i = input("\n1-Adicionar\n2-Listar\n3-Buscar\n4-Remover\n5-Exemplo\n6-Sair\n-")
+        if i == "1":
+            nome = input("\nDigite o nome do arquivo: ")
+            caminho = input("Digite o caminho do arquivo: ")
+            armazenamento = int(input("Digite o tamanho do arquivo: "))
+            htable.add_file(nome, caminho, armazenamento)
+        elif i == "2":
+            for file in htable.list_files():
+                print(file)
+        elif i == "3":
+            nome = input("\nDigite o nome do arquivo para busca: ")
+            file = htable.search_file(nome)
+            print(file if file else "Arquivo não encontrado.")
+        elif i == "4":
+            nome = input("\nDigite o nome do arquivo para remover: ")
+            htable.remove_file(nome)
+        elif i == "5":
+            htable.add_file("relatorio.pdf", "/documentos/relatorio.pdf", 1024)
+            htable.add_file("foto.jpg", "/imagens/foto.jpg", 2048)
+            htable.add_file("dados.csv", "/planilhas/dados.csv", 512)
+            htable.add_file("backup.zip", "/backup/backup.zip", 4096)
+
+            print("\nTodos arquivos:")
+            for file in htable.list_files():
+                print(file)
+
+            print("\nBusca por dados.csv:")
+            file = htable.search_file("dados.csv")
+            print(file if file else "Arquivo não encontrado.")
+
+            print("\nRemovendo foto.jpg")
+            htable.remove_file("foto.jpg")
+
+            print("\nArquivos restantes:")
+            for file in htable.list_files():
+                print(file)
+                
+        elif i == "6":
+            break
+
+main()
