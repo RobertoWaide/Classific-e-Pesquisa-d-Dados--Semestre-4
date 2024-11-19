@@ -65,7 +65,7 @@ def main():
     htable = HashTable(10)
     
     while True:
-        i = input("\n1-Inserir\n2-Mostrar\n3-Buscar\n4-Remover\n5-Exemplo\n-")
+        i = input("\n1-Inserir\n2-Mostrar\n3-Buscar\n4-Remover\n5-Exemplo\n6-Sair\n-")
         if i == "1":
             nome = input("\nDigite a chave: ")
             numero = int(input("Digite o valor: "))
@@ -88,5 +88,7 @@ def main():
             print("\nBusca por 'apple':", htable.search("apple"),"\n")
             htable.remove("banana")
             htable.display()
+        elif i == "6":
+            break
 
 main()
