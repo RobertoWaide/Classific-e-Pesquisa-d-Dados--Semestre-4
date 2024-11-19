@@ -34,8 +34,6 @@ class HashTable:
         for index, items in self.table.items():
             print(f"Index {index}: {items}")
 
-# Exemplo de uso
-
 def main():
     htable = HashTable(10)
     
